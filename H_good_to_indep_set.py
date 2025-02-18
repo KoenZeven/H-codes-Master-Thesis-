@@ -1,6 +1,5 @@
 import gurobipy as gp
 from gurobipy import GRB
-import networkx as nx
 import time
 import itertools
 
@@ -39,7 +38,7 @@ def IndependentSet(size:int, M:list):
     endtime = time.time()
     return m1.ObjVal, endtime - starttime 
 
-def BuildAdjancencyMatrix(graphs:list[nx.Graph], H: list[nx.Graph]) -> tuple[int,list]:
+def BuildAdjancencyMatrix(graphs:list[str], H: list[str]) -> tuple[int,list]:
     """Builds the adjacency matrix of the following graph: 
     Vertices are the graphs in the list 'graphs', edges are between two graphs whose symmetric difference is in H
     
@@ -55,17 +54,33 @@ def BuildAdjancencyMatrix(graphs:list[nx.Graph], H: list[nx.Graph]) -> tuple[int
                 M[i][j] = 1
     return size, M
 
-def symmetric_difference(g1:str, g2:str):
+def symmetric_difference(g1:str, g2:str) -> str:
+    """Returns the symmetric difference of two binary edge representations, functions the same as bitwise xor
+    
+    Input:
+        :str g1,g2: binary edge-representations of the two graphs being analysed
+        
+    Output:
+        :str x: symmetric difference of the two graphs"""
     x = str()
-    for i in range(len(g1)):
-        if g1[i] != g2[i]:
+    for i, g1i in enumerate(g1):
+        if g1i != g2[i]:
             x += '1'
         else:
             x += '0'
     return x
 
 def find_edge_bit_location(number_of_nodes:int, node1:int, node2:int) -> int:
-    """In binary edge representation, returns the bit belonging to the edge (node1,node2), based on the number of nodes"""
+    """In binary edge representation, returns the bit belonging to the edge (node1,node2), based on the number of nodes.
+    The way the bit location is calculated is based on the following ordering of edges:
+    (1,2), (1,3), ..., (1,n), (2,3), (2,4), ..., (2,n), ..., (n-1,n).
+    
+    Input:
+        :int number_of_nodes: the number of nodes
+        :int node1, node2: the integer values of the two nodes of the edge (node1,node2)
+    
+    Output:
+        :int: bit location """
     return (node1 - 1) * number_of_nodes - node1 * (node1 - 1) // 2 + node2 - node1
 
 def symmetric_diff_contains_an_h(g1:str, g2:str, H:list) -> bool:
@@ -80,19 +95,20 @@ def symmetric_diff_contains_an_h(g1:str, g2:str, H:list) -> bool:
         :bool 1/0: 1 if True, 0 if not"""
     
     symm_diff = symmetric_difference(g1, g2)
-    print(g1, g2, symm_diff)
     for H_graph in H:
-        for subgraph in symm_diff:
-            # Not correct yet
-            # This would need all subgraphs of symm_diff of size equal to that of the H_graph
-            # You would have to check (n choose |H_graph|) possibilities, which is polynomial but sloooow
-            if 0:
-                return 1
+        # Current idea: loop over all possible permutations of the edge-representation of H_graph
+        # Then consider the symmetric difference of symm_diff and such a permutation of H_graph.
+        # If this symmetric difference does not add 1's when compared to symm_diff, then
+        # H_graph is a subgraph of symm_diff.
+
+        # Requirement: number of edges of symm_diff (number of 1's in the binary rep.) has to be larger or equal than that pf H_graph
+        if 0:
+            return 1
     return 0
 
 def BuildGraphs(n: int) -> list[str]:
     """Generates all graphs on n vertices and returns their binary string representations."""
-    graphs = []
+    graphs = list()
     num_edges = n * (n - 1) // 2  # Number of edges in the complete graph (excluding loops)
     
     # Iterate over all possible edge combinations
@@ -106,7 +122,7 @@ def main():
     n = 4
     graphs_n = BuildGraphs(n)
     print(graphs_n)
-    size, M = BuildAdjancencyMatrix(graphs_n, [nx.complete_graph(3)])
+    size, M = BuildAdjancencyMatrix(graphs_n, ['111' + '0' * (n * (n - 1) // 2 - 3)])
     print(size,M)
     optimal, timing = IndependentSet(size,M)
     print(optimal, timing)
