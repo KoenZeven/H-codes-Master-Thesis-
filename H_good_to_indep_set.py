@@ -3,7 +3,7 @@ from gurobipy import GRB
 import time
 import itertools
 
-from edge_repr_permutations import find_edge_bit_location
+from edge_repr_permutations import edge_to_bit_location, bit_location_to_edge
 
 def IndependentSet(size:int, M:list):
     """ The ILP to solve the independent set problem, given an adjacency matrix M and number of vertices given by 'size'.
@@ -91,7 +91,7 @@ def symmetric_diff_contains_an_h(g1:str, g2:str, H:list) -> bool:
         # H_graph is a subgraph of symm_diff.
 
         # Requirement: number of edges of symm_diff (number of 1's in the binary rep.) has to be larger or equal than that pf H_graph
-        if 0:
+        if symm_diff == H_graph:
             return 1
     return 0
 
@@ -108,13 +108,18 @@ def BuildGraphs(n: int) -> list[str]:
     return graphs
 
 def main():
-    n = 4
+    n = 5
     graphs_n = BuildGraphs(n)
-    print(graphs_n)
-    size, M = BuildAdjancencyMatrix(graphs_n, ['111' + '0' * (n * (n - 1) // 2 - 3)])
-    print(size,M)
+
+    k3 = '0' * (n * (n - 1) // 2)
+    for j in range(3):
+        for i in range(j):
+            index = edge_to_bit_location(n,i+1,j+1)
+            k3 = k3[:index - 1] + '1' + k3[index:]
+
+    size, M = BuildAdjancencyMatrix(graphs_n, [k3])
     optimal, timing = IndependentSet(size,M)
-    print(optimal, timing)
+    print(optimal)
     return
 
 if __name__ == "__main__":
