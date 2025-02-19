@@ -35,6 +35,42 @@ def bit_location_to_edge(number_of_nodes:int, bit_location:int) -> tuple[int,int
 
 def find_clique(edge_repr: str, size_clique) -> bool:    
     """This function computes whether there exists a clique of the input size in the graph, given by its binary representation."""
+    
+    #   def Bron_Kerbosch1(R:list,P:list,X:list) -> None:
+    #     global largest_clique
+    #     if len(P) == 0 and len(X) == 0:
+    #         if len(R) > len(largest_clique):
+    #             largest_clique = R
+    #         return
+    #     u = (P+X).pop()
+    #     pivot_list = [p for p in P if p not in local_network.neighbors(u)]
+    #     for v in pivot_list:
+    #         Bron_Kerbosch1(R + [v],
+    #                        [p for p in P if p in local_network.neighbors(v)],
+    #                        [x for x in X if x in local_network.neighbors(v)])
+    #         P.remove(v)
+    #         X += [v]  
+
+    # def Bron_Kerbosch2(G:nx.Graph) -> None:
+    #     def degen_ordering(G: nx.Graph):
+    #         if len(G.nodes) == 0:
+    #             return []
+    #         min_degree_node = min(G.degree(), key = lambda x:x[1])[0]
+    #         othernodes = list(G.nodes)
+    #         othernodes.remove(min_degree_node)
+    #         return [min_degree_node] + degen_ordering(G.subgraph(othernodes))
+        
+    #     P = list(G.nodes)
+    #     R,X = [],[]
+    #     for v in degen_ordering(G):
+    #         Bron_Kerbosch1(R + [v],
+    #                        [p for p in P if p in G.neighbors(v)],
+    #                        [x for x in X if x in G.neighbors(v)])
+    #         P.remove(v)
+    #         X += [v]
+    
+    # Bron_Kerbosch2(local_network)
+
     return
 
 def subgraph_isomorphism(step:int, g:str, h_graph:str, h_graphs_number_nodes:int, map_dict:dict, has_been_mapped:list) -> bool:
