@@ -1,9 +1,10 @@
 import gurobipy as gp
 from gurobipy import GRB
 import time
+from math import sqrt
 import itertools
 
-from edge_repr_permutations import edge_to_bit_location, bit_location_to_edge
+from edge_repr_permutations import edge_to_bit_location, bit_location_to_edge, subgraph_isomorphism
 
 def IndependentSet(size:int, M:list):
     """ The ILP to solve the independent set problem, given an adjacency matrix M and number of vertices given by 'size'.
@@ -91,7 +92,8 @@ def symmetric_diff_contains_an_h(g1:str, g2:str, H:list) -> bool:
         # H_graph is a subgraph of symm_diff.
 
         # Requirement: number of edges of symm_diff (number of 1's in the binary rep.) has to be larger or equal than that pf H_graph
-        if symm_diff == H_graph:
+        if subgraph_isomorphism(step = 0, g = symm_diff,  number_of_nodes = int((1 + sqrt(1 + 8 * len(g1)))//2),
+                                h_graph = H_graph, h_graph_number_nodes = 3, map_dict = dict(), has_been_mapped = list()):
             return 1
     return 0
 

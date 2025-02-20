@@ -35,7 +35,7 @@ def bit_location_to_edge(number_of_nodes:int, bit_location:int) -> tuple[int,int
 
 def find_clique(edge_repr: str, size_clique) -> bool:    
     """This function computes whether there exists a clique of the input size in the graph, given by its binary representation."""
-    
+
     #   def Bron_Kerbosch1(R:list,P:list,X:list) -> None:
     #     global largest_clique
     #     if len(P) == 0 and len(X) == 0:
@@ -73,18 +73,34 @@ def find_clique(edge_repr: str, size_clique) -> bool:
 
     return
 
-def subgraph_isomorphism(step:int, g:str, h_graph:str, h_graphs_number_nodes:int, map_dict:dict, has_been_mapped:list) -> bool:
-    def check_subgraph(mapping_function:dict, g1:str, g2:str):
-        return
-    if step == h_graphs_number_nodes:
+def subgraph_isomorphism(step:int, g:str, number_of_nodes:int, h_graph:str, 
+                         h_graph_number_nodes:int, map_dict:dict, 
+                         has_been_mapped:list) -> bool:
+    # Assuming the graph from H is position on the nodes [1,...,k].
+    def check_subgraph(mapping_function:dict, g_graph:str, h_graph:str):
+        for vertex1 in range(h_graph_number_nodes):
+            for vertex2 in range(vertex1 + 1, h_graph_number_nodes):
+                if h_graph[edge_to_bit_location(number_of_nodes, vertex1, vertex2)] == 1:
+                    n1, n2 = mapping_function[vertex1], mapping_function[vertex2]
+                    if n1 > n2:
+                        if g_graph[edge_to_bit_location(number_of_nodes, n2, n1)] != 1:
+                            return False
+                    else:
+                        if g_graph[edge_to_bit_location(number_of_nodes, n1, n2)] != 1:
+                            return False
+    
+    if step == h_graph_number_nodes:
+        print('hi')
         if check_subgraph(map_dict, g, h_graph):
             return True
-    for vertex in g: #Incorrect
+
+    for vertex in range(1, number_of_nodes + 1):
         if vertex in has_been_mapped:
             continue
         map_dict_copy = deepcopy(map_dict)
         has_been_mapped_copy = deepcopy(has_been_mapped)
         map_dict_copy[step] = vertex
         has_been_mapped_copy.append(vertex)
-        subgraph_isomorphism(step+1, g, h_graph, h_graphs_number_nodes, map_dict_copy, has_been_mapped_copy)
+        subgraph_isomorphism(step+1, g, number_of_nodes, h_graph, h_graph_number_nodes, \
+                             map_dict_copy, has_been_mapped_copy)
     return False
