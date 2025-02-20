@@ -92,8 +92,7 @@ def subgraph_isomorphism(step:int, g:str, number_of_nodes:int, h_graph:str,
     if step == h_graph_number_nodes:
         if check_subgraph(map_dict, g, h_graph):
             return True
-        else:
-            return False
+        pass
 
     for vertex in range(1, number_of_nodes + 1):
         if vertex in has_been_mapped:

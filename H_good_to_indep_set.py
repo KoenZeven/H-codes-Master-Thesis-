@@ -73,6 +73,7 @@ def symmetric_difference(g1:str, g2:str) -> str:
             x += '0'
     return x
 
+memo = dict()
 def symmetric_diff_contains_an_h(g1:str, g2:str, H:list) -> bool:
     """Computes whether the symmetric difference of the input graphs has a subgraph which is isomorphic to a graph in the list H. 
     This function is currently unneccesary.
@@ -83,17 +84,17 @@ def symmetric_diff_contains_an_h(g1:str, g2:str, H:list) -> bool:
         
     Output:
         :bool 1/0: 1 if True, 0 if not"""
-    
+
+
     symm_diff = symmetric_difference(g1, g2)
     for H_graph in H:
-        # Current idea: loop over all possible permutations of the edge-representation of H_graph
-        # Then consider the symmetric difference of symm_diff and such a permutation of H_graph.
-        # If this symmetric difference does not add 1's when compared to symm_diff, then
-        # H_graph is a subgraph of symm_diff.
-
-        # Requirement: number of edges of symm_diff (number of 1's in the binary rep.) has to be larger or equal than that pf H_graph
-        if subgraph_isomorphism(step = 0, g = symm_diff,  number_of_nodes = int((1 + sqrt(1 + 8 * len(g1)))//2),
-                                h_graph = H_graph, h_graph_number_nodes = 3, map_dict = dict(), has_been_mapped = list()):
+        if (symm_diff,H_graph) in memo:
+            x = memo[(symm_diff,H_graph)]
+        else:
+            x = subgraph_isomorphism(step = 0, g = symm_diff,  number_of_nodes = int((1 + sqrt(1 + 8 * len(g1)))//2),
+                                h_graph = H_graph, h_graph_number_nodes = 3, map_dict = dict(), has_been_mapped = list())
+            memo[(symm_diff,H_graph)] = x
+        if x:
             return 1
     return 0
 
