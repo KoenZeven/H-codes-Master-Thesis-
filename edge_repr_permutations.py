@@ -104,3 +104,9 @@ def subgraph_isomorphism(step:int, g:str, number_of_nodes:int, h_graph:str,
         subgraph_isomorphism(step+1, g, number_of_nodes, h_graph, h_graph_number_nodes, \
                              map_dict_copy, has_been_mapped_copy)
     return False
+
+def main():
+    return
+
+if __name__ == '__main__':
+    main()
