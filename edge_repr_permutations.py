@@ -78,28 +78,29 @@ def subgraph_isomorphism(step:int, g:str, number_of_nodes:int, h_graph:str,
                          has_been_mapped:list) -> bool:
     # Assuming the graph from H is position on the nodes [1,...,k].
     def check_subgraph(mapping_function:dict, g_graph:str, h_graph:str):
-        for vertex1 in range(h_graph_number_nodes):
-            for vertex2 in range(vertex1 + 1, h_graph_number_nodes):
-                if h_graph[edge_to_bit_location(number_of_nodes, vertex1, vertex2)] == 1:
+        for vertex1 in range(1, h_graph_number_nodes + 1):
+            for vertex2 in range(vertex1 + 1, h_graph_number_nodes + 1):
+                if h_graph[edge_to_bit_location(number_of_nodes, vertex1, vertex2) - 1] == '1':
                     n1, n2 = mapping_function[vertex1], mapping_function[vertex2]
                     if n1 > n2:
-                        if g_graph[edge_to_bit_location(number_of_nodes, n2, n1)] != 1:
+                        if g_graph[edge_to_bit_location(number_of_nodes, n2, n1) - 1] != '1':
                             return False
                     else:
-                        if g_graph[edge_to_bit_location(number_of_nodes, n1, n2)] != 1:
+                        if g_graph[edge_to_bit_location(number_of_nodes, n1, n2) - 1] != '1':
                             return False
     
     if step == h_graph_number_nodes:
-        print('hi')
         if check_subgraph(map_dict, g, h_graph):
             return True
+        else:
+            return False
 
     for vertex in range(1, number_of_nodes + 1):
         if vertex in has_been_mapped:
             continue
         map_dict_copy = deepcopy(map_dict)
         has_been_mapped_copy = deepcopy(has_been_mapped)
-        map_dict_copy[step] = vertex
+        map_dict_copy[step+1] = vertex
         has_been_mapped_copy.append(vertex)
         subgraph_isomorphism(step+1, g, number_of_nodes, h_graph, h_graph_number_nodes, \
                              map_dict_copy, has_been_mapped_copy)
