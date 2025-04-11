@@ -34,13 +34,16 @@ def IndependentSet(size:int, M:list):
             if M[i][j] == 1:
                 m1.addConstr(X[i] + X[j] <= 1)
         m1.addConstr(X[i] <= 1)
+    # We can always assume the empty graph is a part of our solution, 
+    # since if it isn't, we take a graph from the solution and apply symmetric difference with this graph to all other graphs in the solution 
+    m1.addConstr(X[0] >= 1)
 
     # Optimize
     m1.optimize()
 
     for v in m1.getVars():
         if v.x != 0:
-            print(v.varName, v.x)
+            print(v.varName, v.Xn)
 
     
     endtime = time.time()
@@ -65,7 +68,11 @@ def MaxClique(size:int, M:list):
             if M[i][j] == 0:
                 m2.addConstr(X[i] + X[j] <= 1)
         m2.addConstr(X[i] <= 1)
-    
+    # We can always assume the empty graph is a part of our solution, 
+    # since if it isn't, we take a graph from the solution and apply symmetric difference with this graph to all other graphs in the solution 
+    m2.addConstr(X[0] >= 1)
+
+
     # Configure solution pool settings
     m2.setParam(GRB.Param.PoolSearchMode, 2)
     m2.setParam(GRB.Param.PoolSolutions, 10)
@@ -171,10 +178,10 @@ def main():
     # size, M = BuildAdjancencyMatrix(graphs_n, [k3])
     size = 2**((n - 1) * n // 2)
     M = Big_matrix()
-    # optimalInd, timing1 = IndependentSet(size,M)
-    optimalCliq, timing2 = MaxClique(size, M)
-    # print(optimalInd)
-    print(optimalCliq)
+    optimalInd, timing1 = IndependentSet(size,M)
+    # optimalCliq, timing2 = MaxClique(size, M)
+    print(optimalInd)
+    # print(optimalCliq)
     return
 
 if __name__ == "__main__":
